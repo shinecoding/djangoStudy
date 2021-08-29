@@ -2,7 +2,30 @@
 
 {% block content %}
 
-<h1>Projects Template</h1>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed finibus lectus cursus velit bibendum interdum. Pellentesque lobortis lectus vitae mollis laoreet. Sed sit amet ligula turpis. Proin auctor tristique nisi, nec pulvinar sem consequat vel. Mauris sed eros velit. Sed sed risus ut augue porttitor pulvinar. Nulla congue dictum lectus, sed imperdiet mauris laoreet sed. Morbi elementum ligula imperdiet, aliquet orci a, pretium leo. Interdum et malesuada fames ac ante ipsum primis in faucibus. Cras hendrerit elit vel metus placerat fermentum. Aenean facilisis libero tellus, eget dapibus augue tincidunt in. Etiam et mollis erat.</p>
+<p>Hello you are on the {{page}} page</p>
+
+{% if number > 10 %}
+<p>Number is greater than 10</p>
+
+{% elif number == 10 %}
+<p>Number is exactly 10</p>
+
+{% else %}
+<p>Number is less than 10</p>
+{% endif %}
+
+
+
+<hr>
+<h1>Projects</h1>
+
+<ul>
+    {% for project in projects %} 
+         <li>Title: <a href="{% url 'project'  project.id %}">{{project.title}}</a> --- {{project.description}}</li>
+    {% endfor %}
+ </ul>
 
 {% endblock content %}
+
+
+

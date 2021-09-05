@@ -5,6 +5,7 @@ class Project(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
     # blank form 전송할 때 form의 칸이 blank여도 괜찮다
+    featured_image = models.ImageField(null=True, blank=True, default="default.jpg")
     demo_link = models.CharField(max_length=2000, null=True, blank=True)
     source_link = models.CharField(max_length=2000, null=True, blank=True)
     #태그

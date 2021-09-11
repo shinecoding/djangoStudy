@@ -1,12 +1,18 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.contrib.auth.models import User
 from .models import Profile
 
-def loginPage(request):
+def loginUser(request):
+
+    if request.user.is_authenticated:
+        return redirect('profiles')
+
     if request.method == 'POST':
         #print(request.POST)
-        username = request.POST['usernme']
+        username = request.POST['username']
         password = request.POST['password']
 
         try:
@@ -18,9 +24,15 @@ def loginPage(request):
 
         if user is not None:
             login(request, user)
-        
+            return redirect('profiles')
+        else:
+            print('Username OR password is incorrect')
     return render(request, 'users/login_register.html')
 
+
+def logoutUser(request):
+    logout(request)
+    return redirect('login')
 
 def profiles(request):
     profiles = Profile.objects.all()

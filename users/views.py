@@ -93,8 +93,12 @@ def editAccount(request):
         form = ProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             form.save()
-
             return redirect('account')
 
     context = {'form': form}
     return render(request, 'users/profile_form.html', context)
+
+@login_required(login_url='login')
+def createSkill(request):
+    context = {}
+    return render(request, 'users/skill_form.html', context)

@@ -11,6 +11,7 @@ def projects(request):
     context = { 'projects' : projects}
     return render(request, 'projects/projects.html', context)
 
+
 def project(request, pk):
     projectObj = Project.objects.get(id=pk)
     print('project', projectObj)
@@ -19,14 +20,17 @@ def project(request, pk):
 
 @login_required(login_url="login")
 def createProject(request):
+    profile = request.user.profile
     form = ProjectForm()
-
+    
     if request.method == 'POST':
         
         form = ProjectForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            return redirect('projects')
+            project = form.save(commit=False)
+            project.owner = profile
+            project.save()
+            return redirect('account')
         #form = ProjectForm(request.POST)
 
     context = {'form': form }
@@ -35,7 +39,8 @@ def createProject(request):
 
 @login_required(login_url="login")
 def updateProject(request, pk):
-    project = Project.objects.get(id=pk)
+    profile = request.user.profile
+    project = profile.project_set.get(id=pk)
     #해당 pk에 맞는 Project를 가져옴
     form = ProjectForm(instance=project)
     #instance는 바꾸고 싶은 폼
@@ -53,7 +58,8 @@ def updateProject(request, pk):
 
 @login_required(login_url="login")
 def deleteProject(request, pk):
-    project = Project.objects.get(id=pk)
+    profile = request.user.profile
+    project = profile.project_set.get(id=pk)
     if request.method == 'POST':
         project.delete()
         return redirect('projects')

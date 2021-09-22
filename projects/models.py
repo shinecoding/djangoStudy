@@ -3,7 +3,7 @@ import uuid
 from users.models import Profile
 
 class Project(models.Model):
-    owner = models.ForeignKey(Profile, null=True, blank=True, on_delete=models.SET_NULL)
+    owner = models.ForeignKey(Profile, null=True, blank=True, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
     # blank form 전송할 때 form의 칸이 blank여도 괜찮다
@@ -18,6 +18,7 @@ class Project(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
 
+    
 
     def __str__(self):
         return self.title

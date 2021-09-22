@@ -1,7 +1,7 @@
-from typing import ContextManager
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from .models import Project
 from .forms import ProjectForm
 
@@ -50,7 +50,7 @@ def updateProject(request, pk):
         form = ProjectForm(request.POST, request.FILES, instance=project)
         if form.is_valid():
             form.save()
-            return redirect('projects')
+            return redirect('account')
         #form = ProjectForm(request.POST)
 
     context = {'form': form }
@@ -64,4 +64,4 @@ def deleteProject(request, pk):
         project.delete()
         return redirect('projects')
     context = {'object': project}
-    return render(request, 'projects/delete_template.html', context) 
+    return render(request, 'delete_template.html', context) 

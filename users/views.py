@@ -54,7 +54,7 @@ def registerUser(request):
             login(request, user)
             return redirect('edit-account')
         else:
-            messages.success(request, 'An error has occured during registration')
+            messages.error(request, 'An error has occured during registration')
     context = {'page': page, 'form': form}
     return render(request, 'users/login_register.html', context)
 
@@ -118,17 +118,16 @@ def createSkill(request):
 
 
 @login_required(login_url='login')
-def updateSkill(request):
+def updateSkill(request, pk):
 
     profile = request.user.profile
-    form = SkillForm()
+    skill = profile.skill_set.get(id=pk)
+    form = SkillForm(instance=skill)
     
 
     if request.method == 'POST':
-        form = SkillForm(request.POST)
+        form = SkillForm(request.POST, instance=skill)
         if form.is_valid():
-            skill = form.save(commit=False)
-            skill.owner = profile
             skill.save()
             return redirect('account')
 

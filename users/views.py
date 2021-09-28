@@ -4,9 +4,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.urls import conf
-from django.db.models import Q
-from .models import Profile, Skill
+from .models import Profile
 from .forms import CustomUserCreationForm, ProfileForm, SkillForm
+from .utils import searchProfiles
 #from django.contrib.auth.forms import UserCreationForm
 
 
@@ -63,19 +63,7 @@ def registerUser(request):
 
 
 def profiles(request):
-    search_query = ''
-
-    if request.GET.get('search_query'):
-        search_query = request.GET.get('search_query')
-        #print('SEARCH:', search_query)
-
-    skills = Skill.objects.filter(name__icontains=search_query)
-
-    #icontains 대소문자 구분없이 필터
-    profiles = Profile.objects.distinct().filter(
-        Q(name__icontains=search_query) | 
-        Q(short_intro__icontains=search_query) |
-        Q(skill__in=skills))
+    profiles, search_query = searchProfiles(request)
     context = {'profiles':profiles, 'search_query': search_query}
     return render(request, 'users/profiles.html', context)
 

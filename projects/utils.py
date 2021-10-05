@@ -1,5 +1,32 @@
 from .models import Project, Tag
 from django.db.models import Q
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+
+
+def paginateProjects(request, projects, results):
+    page = request.GET.get('page')
+    #results = 3 #한페이지에 몇개씩 보여주는지
+    paginator = Paginator(projects, results)
+
+    try:
+        projects = paginator.page(page)
+    except PageNotAnInteger: #처음 들어왔을 때 파라미터가 없어서 나는 에러
+        page = 1 
+        projects = paginator.page(page) #1로 셋팅
+    except EmptyPage: #페이지수 10000을 넣었을 때 뜨는 에러
+        page = paginator.num_pages #페이지 총수
+        projects = paginator.page(page)
+        
+    leftIndex = (int(page) - 4)
+    if leftIndex <1 :
+        leftIndex = 1
+
+    rightIndex = (int(page) + 5) 
+    if rightIndex > paginator.num_pages:
+        rightIndex = paginator.num_pages +1
+
+    custom_range = range(leftIndex, rightIndex) #페이지바 갯수 설정가능
+    return custom_range, projects
 
 
 def searchProjects(request):

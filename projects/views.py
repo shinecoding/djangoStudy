@@ -1,32 +1,20 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib import messages
 from django.db.models import Q
 from .models import Project, Tag
 from .forms import ProjectForm
-from .utils import searchProjects
+from .utils import searchProjects, paginateProjects
 
 
 
 def projects(request):
+    #utils.py
     projects, search_query = searchProjects(request)
-
-    page = request.GET.get('page')
-    results = 3 #한페이지에 몇개씩 보여주는지
-    paginator = Paginator(projects, results)
-
-    try:
-        projects = paginator.page(page)
-    except PageNotAnInteger: #처음 들어왔을 때 파라미터가 없어서 나는 에러
-        page = 1 
-        projects = paginator.page(page) #1로 셋팅
-    except EmptyPage: #페이지수 10000을 넣었을 때 뜨는 에러
-        page = paginator.num_pages #페이지 총수
-        projects = paginator.page(page)
-        
-    context = { 'projects' : projects, 'search_query': search_query, 'paginator':paginator}
+    custom_range, projects = paginateProjects(request, projects, 2)
+    
+    context = { 'projects' : projects, 'search_query': search_query, 'custom_range': custom_range}
     return render(request, 'projects/projects.html', context)
 
 

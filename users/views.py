@@ -17,7 +17,7 @@ def loginUser(request):
 
     if request.method == 'POST':
         #print(request.POST)
-        username = request.POST['username']
+        username = request.POST['username'].lower()
         password = request.POST['password']
 
         try:

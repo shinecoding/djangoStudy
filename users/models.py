@@ -41,3 +41,22 @@ class Skill(models.Model):
         return str(self.name)
 
 
+class Message(models.Model):
+    sender = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, blank=True)
+    recipient = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, blank=True, related_name="messages")
+    #ForeignKey Profile 두개 연결 안 되기 때문에 둘 중 하나엔 related_name를 붙여줘야하며, Profile.message_set.recipient
+    name = models.CharField(max_length=200, null=True, blank=True)
+    email = models.EmailField(max_length=200, null=True, blank=True)
+    subject = models.CharField(max_length=200, null=True, blank=True)
+    body = models.TextField()
+    is_read = models.BooleanField(default=False, null=True)
+    created = models.DateTimeField(auto_now_add=True)
+    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
+
+    def __str__(self):
+        return self.subject
+    
+    class Meta:
+        ordering = ['is_read', '-created']
+    
+        
